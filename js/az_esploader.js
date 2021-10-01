@@ -110,12 +110,10 @@ class AzEspLoader extends EspLoader {
   // 指定したURLのファイルをダウンロードする
   ajaxArrayBuffer(src) {
     var _self = this;
-    console.log("ajaxArrayBuffer: start " + src);
     var xhr = new XMLHttpRequest();
     xhr.open("GET", src, true);
     xhr.responseType = "arraybuffer";
     xhr.onload = function(e) {
-    console.log(xhr);
       if (xhr.status == 200) {
         _self.ajax_status = 2;
         _self.download_data[src] = xhr.response;
