@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>esp flash tool</title>
+  <script language="JavaScript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script language="JavaScript" src="./js/utilities.js"></script>
+  <script language="JavaScript" src="./js/esptool.js"></script>
+  <script language="JavaScript" src="./js/az_esploader.js"></script>
+</head>
+<body>
+<h3>サーバー上に置いてあるbinファイルをESP32に書き込む</h3>
+<br>
+※今指定しているbinファイルがM5StackCore2用のbinファイルなので、M5StackCore2を接続してから「書込み」ボタンを押してください。<br><br>
+<br>
+<input type="button" id="conn_btn" value="書込み" onClick="javascript:az.esp_write();"><br>
+<div id="write_info"></div>
+<script language="JavaScript"><!--
+
+var az = {};
+var espTool;
+
+// 初期化処理
+az.init = function() {
+	// EspLoader初期化
+	espTool = new AzEspLoader({
+		"updateProgress": az.updateProgress, // アップロードステータス取得
+		"logMsg": az.logMsg // 動作ログ取得
+	});
+};
+
+// アップロードステータス
+az.updateProgress = function(part, percentage) {
+	$("#write_info").html(part + " - " + percentage + " %");
+};
+
+// 動作ログ
+az.logMsg = function(text) {
+	$("#write_info").html(text);
+	console.log(text);
+};
+
+// ESPにファーム書込み
+az.esp_write = async function() {
+	await espTool.writeFlash([
+		{"address": 0x8000, "data": "./data/m5stac_lcd_test.ino.partitions.bin"},
+		{"address": 0x10000, "data": "./data/m5stac_lcd_test.ino.bin"}
+	], 921600);
+};
+
+// ページのロードが終わったら初期化処理開始
+$(function(){
+	az.init();
+});
+
+//--></script>
+
+</body>
+</html>
